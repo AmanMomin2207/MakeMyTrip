@@ -1,0 +1,81 @@
+import { LogOut, Plane, Router, User } from "lucide-react";
+import React from "react";
+import SignupDialog from "./SignupDialog";
+import { useSelector, UseDispatch, useDispatch } from "react-redux";
+// import { Dispatch } from "@reduxjs/toolkit";
+import { Dispatch } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { clearUser } from "@/store";
+import { useRouter } from "next/router";
+
+export const Navbar = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.user.user);
+  const router = useRouter();
+  const logout = () => {
+    dispatch(clearUser());
+  };
+  return (
+    <header className="bg-white backdrop-blur-md py-4 sticky top-0 z-50">
+      <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2 text-white">
+          <Plane className="w-8 h-8 text-red-500" />
+          <span className="text-2xl font-bold text-black">MakeMyTour</span>
+        </div>
+        <div className="flex items-center space-x-4">
+          {user ? (
+            <>
+              if{user.role === "ADMIN" && <Button variant="default" onClick={() => router.push("/admin")}>ADMIN</Button>}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
+                    <Avatar className="h-8 w-8 text-black">
+                      <AvatarFallback>
+                        {user?.firstname?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-58" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-xs font-medium leading-none">
+                        {user?.firstname}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user?.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => logout()}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <SignupDialog />
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};

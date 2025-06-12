@@ -1,13 +1,17 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { SaveAll } from "lucide-react";
 
 const getuserfromlocalstorage = () => {
-  const storeduser = localStorage.getItem("user");
-  return storeduser ? JSON.parse(storeduser) : null;
+if(typeof window !== "undefined" && localStorage){
+    const storeduser = localStorage.getItem("user");
+    return storeduser ? JSON.parse(storeduser) : null;
+}
+return null;
 };
 
 const saveusertolocalstoreage = (user) => {
-  localStorage.setItem("user", JSON.stringify(user));
+    if(typeof window !== "undefined" && localStorage){
+        localStorage.setItem("user", JSON.stringify(user));
+    }
 };
 
 const initialState = {
@@ -16,16 +20,17 @@ const initialState = {
 
 const userSlice = createSlice({
   name: "user",
-  initialState: initialState,
+  initialState,
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      console.log(action.payload);
       saveusertolocalstoreage(action.payload);
     },
     clearUser: (state) => {
       state.user = null;
-      localStorage.removeItem("user");
+      if(typeof window !== "undefined" && localStorage){
+        localStorage.removeItem("user");
+      }
     },
   },
 });

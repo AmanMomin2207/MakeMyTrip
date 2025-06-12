@@ -21,25 +21,41 @@ const SignupDialog = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [open, setopen] = useState(false);
   const dispatch = useDispatch();
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSignup) {
-      const signin = await signup(
-        firstName,
-        lastName,
-        phoneNumber,
-        email,
-        password
-      );
-      dispatch(setUser(signin));
+      try {
+        const signin = await signup(
+          firstName,
+          lastName,
+          phoneNumber,
+          email,
+          password
+        );
+        dispatch(setUser(signin));
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      const data = await login(email, password);
-      dispatch(setUser(data));
+      try {
+        const data = await login(email, password);
+        dispatch(setUser(data));
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
+  const clearForm = () => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setPhoneNumber("");
+  };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setopen}>
       <DialogTrigger asChild>
         <Button
           className="bg-white text-black hover:bg-gray-200"
