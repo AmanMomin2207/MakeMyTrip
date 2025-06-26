@@ -205,6 +205,7 @@ interface User {
 function UserSearch() {
   const [email, setemail] = useState("");
   const [user, setuser] = useState<User | null>(null);
+
   const handlesearch = (e: React.FormEvent) => {
     e.preventDefault();
     const sampleuser: any = {
@@ -258,7 +259,131 @@ function UserSearch() {
   );
 }
 
-function Addeditflight({ flight }: any) {
+interface Hotel {
+  id?: string;
+  hotelName: string;
+  location: string;
+  pricePerNight: number;
+  availableRooms: number;
+  amenities: string;
+}
+
+function Addedithotel({ hotel }: {hotel : Hotel | null}) {
+  const [formdata, setformdata] = useState({
+    hotelName: "",
+    location: "",
+    pricePerNight: 0,
+    availableRooms: 0,
+    amenities: "",
+  });
+  useEffect(() => {
+    if (hotel) {
+      setformdata(hotel);
+    } else {
+      setformdata({
+        hotelName: "",
+        location: "",
+        pricePerNight: 0,
+        availableRooms: 0,
+        amenities: "",
+      });
+    }
+  }, [hotel]);
+
+  const handlechange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setformdata((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlesubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Submitting hotel data:" , formdata);
+
+    if (!hotel) {
+      setformdata({
+        hotelName: "",
+        location: "",
+        pricePerNight: 0,
+        availableRooms: 0,
+        amenities: "",
+      });
+    }  
+  };
+
+  return (
+    <form onSubmit={handlesubmit} className="space-y-4 ">
+      <h3 className="text-lg font-semibold mb-2">
+        {hotel ? "Edit Hotel" : "Add new Hotel"}
+      </h3>
+      <div>
+        <Label htmlFor="hotelName">Hotel name</Label>
+        <Input
+          id="hotelName"
+          name="hotelName"
+          value={formdata.hotelName}
+          onChange={handlechange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="from">Location</Label>
+        <Input
+          id="location"
+          name="location"
+          value={formdata.location}
+          onChange={handlechange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="to">PricePerNight</Label>
+        <Input
+          id="pricePerNight"
+          name="pricePerNight"
+          type="number"
+          value={formdata.pricePerNight}
+          onChange={handlechange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="availableRooms">Departure Time</Label>
+        <Input
+          id="availableRooms"
+          name="availableRooms"
+          type="number"
+          value={formdata.availableRooms}
+          onChange={handlechange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="amenities">Arrival Time</Label>
+        <Input
+          id="amenities"
+          name="amenities"
+          value={formdata.amenities}
+          onChange={handlechange}
+          required
+        />
+      </div>
+      <Button type="submit">{hotel ? "Update Hotel" : "Add Hotel"}</Button>
+    </form>
+  );
+}
+
+interface Flight {
+  _id?: string;
+  flightName: string;
+  from: string;
+  to: string;
+  departureTime : string;
+  arrivalTime: string;
+  price: number;
+  availableSeats: number;
+}
+
+function Addeditflight({ flight }: { flight: Flight | null}) {
   const [formdata, setformdata] = useState({
     flightName: "",
     from: "",
@@ -268,6 +393,7 @@ function Addeditflight({ flight }: any) {
     price: 0,
     availableSeats: 0,
   });
+
   useEffect(() => {
     if (flight) {
       setformdata(flight);
@@ -283,14 +409,30 @@ function Addeditflight({ flight }: any) {
       });
     }
   }, [flight]);
+
   const handlechange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setformdata((prev) => ({ ...prev, [name]: value }));
   };
+  
   const handlesubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formdata);
+
+    console.log("Submitting flight data:" , formdata);
+
+    if(!flight){
+      setformdata({
+        flightName: "",
+        from: "",
+        to: "",
+        departureTime: "",
+        arrivalTime: "",
+        price: 0,
+        availableSeats: 0,
+      });
+    }
   };
+
   return (
     <form onSubmit={handlesubmit} className="space-y-4 ">
       <h3 className="text-lg font-semibold mb-2">
@@ -371,97 +513,6 @@ function Addeditflight({ flight }: any) {
         />
       </div>
       <Button type="submit">{flight ? "Update Flight" : "Add Flight"}</Button>
-    </form>
-  );
-}
-
-function Addedithotel({ hotel }: any) {
-  const [formdata, setformdata] = useState({
-    hotelName: "",
-    location: "",
-    pricePerNight: 0,
-    availableRooms: 0,
-    amenities: "",
-  });
-  useEffect(() => {
-    if (hotel) {
-      setformdata(hotel);
-    } else {
-      setformdata({
-        hotelName: "",
-        location: "",
-        pricePerNight: 0,
-        availableRooms: 0,
-        amenities: "",
-      });
-    }
-  }, [hotel]);
-  const handlechange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setformdata((prev) => ({ ...prev, [name]: value }));
-  };
-  const handlesubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formdata);
-  };
-  return (
-    <form onSubmit={handlesubmit} className="space-y-4 ">
-      <h3 className="text-lg font-semibold mb-2">
-        {hotel ? "Edit Hotel" : "Add new Hotel"}
-      </h3>
-      <div>
-        <Label htmlFor="hotelName">Hotel name</Label>
-        <Input
-          id="hotelName"
-          name="hotelName"
-          value={formdata.hotelName}
-          onChange={handlechange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="from">Location</Label>
-        <Input
-          id="location"
-          name="location"
-          value={formdata.location}
-          onChange={handlechange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="to">PricePerNight</Label>
-        <Input
-          id="pricePerNight"
-          name="pricePerNight"
-          type="number"
-          value={formdata.pricePerNight}
-          onChange={handlechange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="availableRooms">Departure Time</Label>
-        <Input
-          id="availableRooms"
-          name="availableRooms"
-          type="number"
-          value={formdata.availableRooms}
-          onChange={handlechange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="amenities">Arrival Time</Label>
-        <Input
-          id="amenities"
-          name="amenities"
-          value={formdata.amenities}
-          onChange={handlechange}
-          required
-        />
-      </div>
-      <Button type="submit">{hotel ? "Update Hotel" : "Add Hotel"}</Button>
     </form>
   );
 }

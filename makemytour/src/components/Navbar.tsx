@@ -1,9 +1,9 @@
-import { LogOut, Plane, Router, User } from "lucide-react";
+import { LogOut, Plane, User } from "lucide-react";
 import React from "react";
 import SignupDialog from "./SignupDialog";
-import { useSelector, UseDispatch, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 // import { Dispatch } from "@reduxjs/toolkit";
-import { Dispatch } from "react";
+// import { Dispatch } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
