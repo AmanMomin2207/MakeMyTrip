@@ -1,3 +1,6 @@
+import { addflight, addhotel } from "@/api";
+import FlightList from "@/components/Flights/Flightlist";
+import HotelList from "@/components/Hotel/Hotellist";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,8 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HtmlContext } from "next/dist/server/route-modules/pages/vendored/contexts/entrypoints";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Flights = [
   {
@@ -103,33 +105,7 @@ const index = () => {
             </CardHeader>
             <CardContent>
               <div className="grid  grid-cols-2 gap-4">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2 ">Flight List</h3>
-                  <Table>
-                    <TableHeader className="bg-gray-500">
-                      <TableRow>
-                        <TableHead>Flight Name</TableHead>
-                        <TableHead>From</TableHead>
-                        <TableHead>To</TableHead>
-                        <TableHead>Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {Flights.map((flight: any) => (
-                        <TableRow key={flight._id}>
-                          <TableCell>{flight.flightName}</TableCell>
-                          <TableCell>{flight.from}</TableCell>
-                          <TableCell>{flight.to}</TableCell>
-                          <TableCell>
-                            <Button onClick={() => setSelectedFlight(flight)}>
-                              Edit
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                <FlightList onSelect={setSelectedFlight} />
                 <Addeditflight flight={selectedFlight} />
               </div>
             </CardContent>
@@ -145,33 +121,7 @@ const index = () => {
             </CardHeader>
             <CardContent>
               <div className="grid  grid-cols-2 gap-4">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2 ">hotels List</h3>
-                  <Table>
-                    <TableHeader className="bg-gray-500">
-                      <TableRow>
-                        <TableHead>Hotel Name</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Price/Night</TableHead>
-                        <TableHead>Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {Hotels.map((hotel: any) => (
-                        <TableRow key={hotel._id}>
-                          <TableCell>{hotel.hotelName}</TableCell>
-                          <TableCell>{hotel.location}</TableCell>
-                          <TableCell>{hotel.pricePerNight}</TableCell>
-                          <TableCell>
-                            <Button onClick={() => setSelectedHotel(hotel)}>
-                              Edit
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                <HotelList onSelect={setSelectedHotel} />
                 <Addedithotel hotel={selectedHotel} />
               </div>
             </CardContent>
@@ -222,7 +172,9 @@ function UserSearch() {
     <div className="space-y-4">
       <form onSubmit={handlesearch} className="flex gap-2">
         <div className="flex-1">
-          <Label htmlFor="email" className="sr-only">Email</Label>
+          <Label htmlFor="email" className="sr-only">
+            Email
+          </Label>
           <Input
             id="email"
             type="email"
@@ -268,7 +220,7 @@ interface Hotel {
   amenities: string;
 }
 
-function Addedithotel({ hotel }: {hotel : Hotel | null}) {
+function Addedithotel({ hotel }: { hotel: Hotel | null }) {
   const [formdata, setformdata] = useState({
     hotelName: "",
     location: "",
@@ -295,9 +247,17 @@ function Addedithotel({ hotel }: {hotel : Hotel | null}) {
     setformdata((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlesubmit = (e: React.FormEvent) => {
+  const handlesubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting hotel data:" , formdata);
+    console.log("Submitting hotel data:", formdata);
+
+    await addhotel(
+      formdata.hotelName,
+      formdata.location,
+      formdata.pricePerNight,
+      formdata.availableRooms,
+      formdata.amenities
+    );
 
     if (!hotel) {
       setformdata({
@@ -307,7 +267,7 @@ function Addedithotel({ hotel }: {hotel : Hotel | null}) {
         availableRooms: 0,
         amenities: "",
       });
-    }  
+    }
   };
 
   return (
@@ -347,7 +307,7 @@ function Addedithotel({ hotel }: {hotel : Hotel | null}) {
         />
       </div>
       <div>
-        <Label htmlFor="availableRooms">Departure Time</Label>
+        <Label htmlFor="availableRooms">Available Rooms </Label>
         <Input
           id="availableRooms"
           name="availableRooms"
@@ -358,7 +318,7 @@ function Addedithotel({ hotel }: {hotel : Hotel | null}) {
         />
       </div>
       <div>
-        <Label htmlFor="amenities">Arrival Time</Label>
+        <Label htmlFor="amenities">Amenities</Label>
         <Input
           id="amenities"
           name="amenities"
@@ -377,13 +337,13 @@ interface Flight {
   flightName: string;
   from: string;
   to: string;
-  departureTime : string;
+  departureTime: string;
   arrivalTime: string;
   price: number;
   availableSeats: number;
 }
 
-function Addeditflight({ flight }: { flight: Flight | null}) {
+function Addeditflight({ flight }: { flight: Flight | null }) {
   const [formdata, setformdata] = useState({
     flightName: "",
     from: "",
@@ -414,13 +374,23 @@ function Addeditflight({ flight }: { flight: Flight | null}) {
     const { name, value } = e.target;
     setformdata((prev) => ({ ...prev, [name]: value }));
   };
-  
-  const handlesubmit = (e: React.FormEvent) => {
+
+  const handlesubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Submitting flight data:" , formdata);
+    console.log("Submitting flight data:", formdata);
 
-    if(!flight){
+    await addflight(
+      formdata.flightName,
+      formdata.from,
+      formdata.to,
+      formdata.departureTime,
+      formdata.arrivalTime,
+      formdata.price,
+      formdata.availableSeats
+    );
+
+    if (!flight) {
       setformdata({
         flightName: "",
         from: "",
@@ -502,7 +472,7 @@ function Addeditflight({ flight }: { flight: Flight | null}) {
         />
       </div>
       <div>
-        <Label htmlFor="availableSeats">Arrival Time</Label>
+        <Label htmlFor="availableSeats">Available Seats</Label>
         <Input
           id="availableSeats"
           name="availableSeats"
