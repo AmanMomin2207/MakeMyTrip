@@ -34,7 +34,12 @@ export const Navbar = () => {
         <div className="flex items-center space-x-4">
           {user ? (
             <>
-              if{user.role === "ADMIN" && <Button variant="default" onClick={() => router.push("/admin")}>ADMIN</Button>}
+              if
+              {user.role === "ADMIN" && (
+                <Button variant="default" onClick={() => router.push("/admin")}>
+                  ADMIN
+                </Button>
+              )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button

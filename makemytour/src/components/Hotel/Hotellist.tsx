@@ -9,6 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { getflight, gethotel } from "@/api";
+import Loader from "../Loader";
 
 const HotelList = ({ onSelect }: any) => {
   const [hotels, sethotels] = useState<any[]>([]);
@@ -27,7 +28,7 @@ const HotelList = ({ onSelect }: any) => {
     fetchhotel();
   }, []);
   if (loading) {
-    return <div> Loading ...</div>;
+    return <Loader />;
   }
 
   return (

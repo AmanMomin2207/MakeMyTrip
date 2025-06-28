@@ -9,6 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { getflight } from "@/api";
+import Loader from "../Loader";
 
 const FlightList = ({ onSelect }: any) => {
   const [flight, setflight] = useState<any[]>([]);
@@ -27,7 +28,7 @@ const FlightList = ({ onSelect }: any) => {
     fetchflight();
   }, []);
   if (loading) {
-    return <div> Loading ...</div>;
+    return <Loader/>;
   }
   return (
     <div>

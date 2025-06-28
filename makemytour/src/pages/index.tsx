@@ -1,3 +1,5 @@
+import { getflight, gethotel } from "@/api";
+import Loader from "@/components/Loader";
 import SearchSelect from "@/components/SearchSelect";
 import SignupDialog from "@/components/SignupDialog";
 import { Button } from "@/components/ui/button";
@@ -16,7 +18,9 @@ import {
   Umbrella,
   Users,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function Home() {
   const [bookingtype, setbookingtype] = useState("flights");
@@ -25,15 +29,20 @@ export default function Home() {
   const [date, setdate] = useState("");
   const [travelers, settravelers] = useState(1);
   const [searchresult, setsearchresult] = useState<any[]>([]);
+  const [hotels, sethotels] = useState<any[]>([]);
+  const [loading, setloading] = useState(true);
+  const [flight, setflight] = useState<any[]>([]);
+  const user = useSelector((state: any) => state.user.user);
+  const router = useRouter();
 
-  const flightData = [
+  const flightD = [
     { id: 1, from: "Delhi", to: "Mumbai", date: "2025-01-15", price: 5000 },
     { id: 2, from: "Mumbai", to: "Bangalore", date: "2025-01-16", price: 4500 },
     { id: 3, from: "Bangalore", to: "Delhi", date: "2025-01-17", price: 5500 },
     { id: 4, from: "Delhi", to: "Kolkata", date: "2025-01-18", price: 6000 },
   ];
 
-  const hotelData = [
+  const hotelD = [
     { id: 1, name: "Luxury Palace", city: "Mumbai", price: 15000 },
     { id: 2, name: "Comfort Inn", city: "Delhi", price: 8000 },
     { id: 3, name: "Seaside Resort", city: "Goa", price: 12000 },
@@ -111,31 +120,71 @@ export default function Home() {
     },
   ];
 
+  useEffect(() => {
+    const fetchdata = async () => {
+      try {
+        const data = await gethotel();
+        sethotels(data);
+        const fightdata = await getflight();
+        setflight(fightdata);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setloading(false);
+      }
+    };
+    fetchdata();
+  }, [user]);
+
   const cityoption = useMemo(() => {
     const cities = new Set<string>();
-    flightData.forEach((flight) => {
+    flight.forEach((flight) => {
       cities.add(flight.from);
       cities.add(flight.to);
     });
-    hotelData.forEach((hotel) => {
-      cities.add(hotel.city);
+    hotels.forEach((hotel) => {
+      cities.add(hotel.location);
     });
     return Array.from(cities).map((city) => ({ value: city, label: city }));
-  }, []);
+  }, [flight, hotels]);
+
+  if (loading) {
+    return <Loader/>;
+  }
 
   const handlesearch = () => {
     if (bookingtype === "flights") {
-      const results = flightData.filter(
+      const results = flight.filter(
         (FLIGHT) =>
           FLIGHT.from.toLowerCase() === from.toLowerCase() &&
           FLIGHT.to.toLowerCase() === to.toLowerCase()
       );
       setsearchresult(results);
     } else if (bookingtype === "hotels") {
-      const results = hotelData.filter(
-        (HOTEL) => HOTEL.city.toLowerCase() === to.toLowerCase()
+      const results = hotels.filter(
+        (HOTEL) => HOTEL.location.toLowerCase() === to.toLowerCase()
       );
       setsearchresult(results);
+    }
+  };
+
+  const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", options);
+  };
+
+  const handlebooknow = (id: any) => {
+    if (bookingtype === "flights") {
+      router.push(`/book-flight/${id}`);
+    } else {
+      router.push(`/book-hotel/${id}`);
     }
   };
 
@@ -181,7 +230,7 @@ export default function Home() {
                   placeholder="From"
                   value={from}
                   onChange={setfrom}
-                  icon={<MapPin className="text-gray-400"/>}
+                  icon={<MapPin className="text-gray-400" />}
                   subtitle="Enter City or Airport"
                 />
               </div>
@@ -192,7 +241,7 @@ export default function Home() {
                 placeholder={bookingtype === "flights" ? "To" : "city"}
                 value={to}
                 onChange={setTo}
-                icon={<MapPin className="text-gray-400"/>}
+                icon={<MapPin className="text-gray-400" />}
                 subtitle={
                   bookingtype === "flights"
                     ? "Enter City or Airport"
@@ -208,7 +257,7 @@ export default function Home() {
                   setdate(e.target.value)
                 }
                 type="date"
-                icon={<Calendar className="text-gray-400"/>}
+                icon={<Calendar className="text-gray-400" />}
                 subtitle="Select a date"
               />
             </div>
@@ -224,40 +273,62 @@ export default function Home() {
                 subtitle="Number of travelers"
               />
             </div>
-            <Button className="col-span-1 h-full" onClick={handlesearch}>Search</Button>
+            <Button className="col-span-1 h-full" onClick={handlesearch}>
+              Search
+            </Button>
           </div>
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4 text-black">Search Results</h2>
+            <h2 className="text-xl font-semibold mb-4 text-black">
+              Search Results
+            </h2>
             {searchresult.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
-                {searchresult.map((result)=> (
-                  <div 
-                      key={result.id}
-                      className="bg-white rounded-lg shadow p-4 border border-gray-200"
-                    >
-                    {bookingtype === "flights" ? (  
+                {searchresult.map((result) => (
+                  <div
+                    key={result.id}
+                    className="bg-white rounded-lg shadow p-4 border border-gray-200"
+                  >
+                    {bookingtype === "flights" ? (
                       <>
-                      <h3 className="font-semibold text-lg">{result.from} to {result.to}</h3>
-                      <p className="text-gray-600">Date : {result.date}</p>
-                      <p className="text-lg font-bold mt-2"> ₹{result.price}</p>
-                      <Button className="w-full mt-4 ">Book Now</Button>
+                        <p className="font-semibold text-lg">
+                          Flight Name : {result.flightName}{" "}
+                        </p>
+                        <h3 className="font-semibold text-lg">
+                          {result.from} to {result.to}
+                        </h3>
+                        <p className="text-gray-600">
+                          Departure time : {formatDate(result.departureTime)}
+                        </p>
+                        <p className="text-gray-600">
+                          Arrival time : {formatDate(result.arrivalTime)}
+                        </p>
+                        <p className="text-lg font-bold mt-2">
+                          ₹{result.price}
+                        </p>
+                        <Button
+                          className="w-full mt-4"
+                          onClick={() => handlebooknow(result.id)}
+                        >
+                          Book Now
+                        </Button>
                       </>
-                    ): (
+                    ) : (
                       <>
-                      <h3>
-                        {result.name}
-                      </h3>
-                      <p>
-                        {result.city}
-                      </p>
-                      <p>
-                        {result.price} per night
-                      </p>
-                      <button>
-                        Book Now
-                      </button>
+                        <h3 className="font-semibold text-lg">
+                          {result.hotelName}
+                        </h3>
+                        <p className="text-gray-600">City: {result.location}</p>
+                        <p className="text-lg font-bold mt-2">
+                          {result.pricePerNight} per night
+                        </p>
+                        <Button
+                          className="w-full mt-4"
+                          onClick={() => handlebooknow(result.id)}
+                        >
+                          Book Now
+                        </Button>
                       </>
-                    )} 
+                    )}
                   </div>
                 ))}
               </div>
