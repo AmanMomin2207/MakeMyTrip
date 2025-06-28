@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store, { setUser } from "../store";
 import { Navbar } from "@/components/Navbar";
 import { useEffect } from "react";
+import Footer from "@/components/Footer";
 
 const Myapp = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
@@ -18,6 +19,7 @@ const Myapp = ({ Component, pageProps }: AppProps) => {
     <div className="min-h-screen ">
       <Navbar />
       <Component {...pageProps} />
+      <Footer/>
     </div>
   );
 };

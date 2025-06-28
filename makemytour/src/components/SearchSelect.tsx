@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea, ScrollAreaViewport, ScrollAreaScrollbar, ScrollAreaThumb } from "@radix-ui/react-scroll-area";
 import { Button } from "./ui/button";
 
 const SearchSelect = ({
-  option,
+  options,
   placeholder,
   value,
   onChange,
@@ -30,8 +30,8 @@ const SearchSelect = ({
     };
   }, []);
 
-  const filteredoptions = option.filter((option: any) =>
-    option.label.toLowerCase().incluses(searchterm.toLowerCase())
+  const filteredoptions = options.filter((option: any) =>
+    option.label.toLowerCase().includes(searchterm.toLowerCase())
   );
   return (
     <div ref={wrapperref} className="relative">
@@ -59,19 +59,29 @@ const SearchSelect = ({
       {isopen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 round-mg shadow-lg">
           <ScrollArea className="h-64">
-            {filteredoptions.map((option: any) => {
-              <Button
-                key={option.value}
-                variant="ghost"
-                onClick={() => {
-                  onChange(option.value);
-                  setsearchterm("");
-                  setisopen(false);
-                }}
-              >
-                {option.value}
-              </Button>;
-            })}
+            <ScrollAreaViewport className="h-full w-full rounded-[inherit] text-black">
+              <div className="py-1">
+                {filteredoptions.map((option: any) => {
+                  return (
+                    <Button
+                      key={option.value}
+                      variant="ghost"
+                      onClick={() => {
+                        onChange(option.value);
+                        setsearchterm("");
+                        setisopen(false);
+                      }}
+                      className="w-full justify-start"
+                    >
+                      {option.label}
+                    </Button>
+                  );
+                })}
+              </div>
+            </ScrollAreaViewport>
+            <ScrollAreaScrollbar orientation="vertical">
+              <ScrollAreaThumb />
+            </ScrollAreaScrollbar>
           </ScrollArea>
         </div>
       )}

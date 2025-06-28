@@ -1,5 +1,6 @@
 import SearchSelect from "@/components/SearchSelect";
 import SignupDialog from "@/components/SignupDialog";
+import { Button } from "@/components/ui/button";
 import {
   Bus,
   Calendar,
@@ -9,9 +10,11 @@ import {
   Hotel,
   MapPin,
   Plane,
+  QrCode,
   Shield,
   Train,
   Umbrella,
+  Users,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -25,8 +28,8 @@ export default function Home() {
 
   const flightData = [
     { id: 1, from: "Delhi", to: "Mumbai", date: "2025-01-15", price: 5000 },
-    { id: 2, from: "Mumbai", to: "Bangalure", date: "2025-01-16", price: 4500 },
-    { id: 3, from: "Bangalure", to: "Delhi", date: "2025-01-17", price: 5500 },
+    { id: 2, from: "Mumbai", to: "Bangalore", date: "2025-01-16", price: 4500 },
+    { id: 3, from: "Bangalore", to: "Delhi", date: "2025-01-17", price: 5500 },
     { id: 4, from: "Delhi", to: "Kolkata", date: "2025-01-18", price: 6000 },
   ];
 
@@ -107,6 +110,7 @@ export default function Home() {
         "https://images.unsplash.com/photo-1593181629936-11c609b8db9b?auto=format&fit=crop&w=800",
     },
   ];
+
   const cityoption = useMemo(() => {
     const cities = new Set<string>();
     flightData.forEach((flight) => {
@@ -118,6 +122,7 @@ export default function Home() {
     });
     return Array.from(cities).map((city) => ({ value: city, label: city }));
   }, []);
+
   const handlesearch = () => {
     if (bookingtype === "flights") {
       const results = flightData.filter(
@@ -167,28 +172,27 @@ export default function Home() {
           </div>
         </nav>
 
-        <div>
-          <div>
+        <div className="bg-white rounded-xl shadow-lg mx-auto max-w-5xl p-6 ">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {bookingtype === "flights" && (
-              <div>
-                {" "}
+              <div className="col-span-1 text-black">
                 <SearchSelect
-                  option={cityoption}
+                  options={cityoption}
                   placeholder="From"
                   value={from}
                   onChange={setfrom}
-                  icon={<MapPin />}
+                  icon={<MapPin className="text-gray-400"/>}
                   subtitle="Enter City or Airport"
                 />
               </div>
             )}
-            <div>
+            <div className="col-span-1 text-black">
               <SearchSelect
-                option={cityoption}
-                placeholder={bookingtype === "flights" ? "to" : "city"}
+                options={cityoption}
+                placeholder={bookingtype === "flights" ? "To" : "city"}
                 value={to}
                 onChange={setTo}
-                icon={<MapPin />}
+                icon={<MapPin className="text-gray-400"/>}
                 subtitle={
                   bookingtype === "flights"
                     ? "Enter City or Airport"
@@ -196,21 +200,206 @@ export default function Home() {
                 }
               />
             </div>
-            <div>
-              <SearchSelect
-                placeholder={bookingtype === "flights" ? "to" : "city"}
+            <div className="col-span-1  text-black">
+              <SearchInput
+                placeholder="Date"
                 value={date}
-                onChange={setTo}
-                icon={<Calendar />}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setdate(e.target.value)
+                }
+                type="date"
+                icon={<Calendar className="text-gray-400"/>}
                 subtitle="Select a date"
               />
             </div>
+            <div className="col-span-1 text-black">
+              <SearchInput
+                placeholder="Travelers"
+                value={travelers.toString()}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  settravelers(parseInt(e.target.value) || 1)
+                }
+                type="number"
+                icon={<Users className="text-gray-400" />}
+                subtitle="Number of travelers"
+              />
+            </div>
+            <Button className="col-span-1 h-full" onClick={handlesearch}>Search</Button>
           </div>
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-4 text-black">Search Results</h2>
+            {searchresult.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
+                {searchresult.map((result)=> (
+                  <div 
+                      key={result.id}
+                      className="bg-white rounded-lg shadow p-4 border border-gray-200"
+                    >
+                    {bookingtype === "flights" ? (  
+                      <>
+                      <h3 className="font-semibold text-lg">{result.from} to {result.to}</h3>
+                      <p className="text-gray-600">Date : {result.date}</p>
+                      <p className="text-lg font-bold mt-2"> ₹{result.price}</p>
+                      <Button className="w-full mt-4 ">Book Now</Button>
+                      </>
+                    ): (
+                      <>
+                      <h3>
+                        {result.name}
+                      </h3>
+                      <p>
+                        {result.city}
+                      </p>
+                      <p>
+                        {result.price} per night
+                      </p>
+                      <button>
+                        Book Now
+                      </button>
+                      </>
+                    )} 
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 text-sm">
+                No {bookingtype} available for the selected criteria
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 text-black">
+          {/* Offers Section */}
+          <section className="my-16">
+            <h2 className="text-2xl font-bold mb-8 text-white">Best Offers</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {offers.map((offer, index) => (
+                <OfferCard key={index} {...offer} />
+              ))}
+            </div>
+          </section>
+
+          {/* Collections Section */}
+          <section className="my-16">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-white">
+                Handpicked Collections for You
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {collections.map((collection, index) => (
+                <CollectionCard key={index} {...collection} />
+              ))}
+            </div>
+          </section>
+
+          {/* Wonders Section */}
+          <section className="my-16">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-white">
+                Unlock Lesser-Known <span></span> Wonders of India
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {wonders.map((wonder, index) => (
+                <WonderCard key={index} {...wonder} />
+              ))}
+            </div>
+          </section>
+
+          {/* Download App Section */}
+          <DownloadApp />
         </div>
       </main>
     </div>
   );
 }
+
+const OfferCard = ({ title, description, imageUrl }: any) => {
+  return (
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
+      <div className="p-4">
+        <h3 className="font-semibold text-lg mb-2">{title}</h3>
+        <p className="text-gray-600 text-sm">{description}</p>
+        <button className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+          Book Now
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const CollectionCard = ({ title, imageUrl, tag }: any) => {
+  return (
+    <div className="relative group cursor-pointer overflow-hidden rounded-lg">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70">
+        <div className="absolute top-4 left-4">
+          <span className="bg-white text-black text-sm font-semibold px-2 py-1 rounded">
+            {tag}
+          </span>
+        </div>
+        <div className="absolute bottom-4 left-4 right-4">
+          <h3 className="text-white text-lg font-semibold">{title}</h3>
+        </div>
+      </div>
+    </div>
+  );
+};
+const DownloadApp = () => {
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md max-w-7xl mx-auto my-12">
+      <div className="flex flex-col md:flex-row items-center justify-between">
+        <div className="mb-6 md:mb-0">
+          <h3 className="text-xl font-bold mb-2">Download App Now!</h3>
+          <p className="text-gray-600 mb-4">
+            Get India's #1 travel super app with best deals on flights
+          </p>
+          <div className="flex space-x-4">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+              alt="App Store"
+              className="h-10"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+              alt="Play Store"
+              className="h-10"
+            />
+          </div>
+        </div>
+        <div className="flex items-center space-x-4">
+          <QrCode className="w-24 h-24" />
+          <p className="text-sm text-gray-600">
+            Scan QR code to download the app
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const WonderCard = ({ title, imageUrl }: any) => {
+  return (
+    <div className="relative group cursor-pointer overflow-hidden rounded-lg">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70">
+        <div className="absolute bottom-4 left-4 right-4">
+          <h3 className="text-white text-lg font-semibold">{title}</h3>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function Navitem({ icon, text, active = false, onClick }: any) {
   return (
@@ -223,5 +412,33 @@ function Navitem({ icon, text, active = false, onClick }: any) {
       {icon}
       <span className="text-sm mt-1 whitespace-nowrap">{text}</span>
     </button>
+  );
+}
+
+function SearchInput({
+  icon,
+  placeholder,
+  value,
+  onChange,
+  subtitle,
+  type = "text",
+}: any) {
+  return (
+    <div className="border rounded-lg p-3 hover:border-blue-500 cursor-pointer h-full">
+      <div className="flex items-center space-x-2">
+        {icon}
+        <div className="flex-1 min-w-0">
+          <div className="text-sm text-grey-500 truncate">{placeholder}</div>
+          <input
+            type={type}
+            value={value}
+            onChange={onChange}
+            className="font-semibold w-full bg-transparent outline-none"
+            placeholder={placeholder}
+          />
+          <div className="text-xs text-grey-400 truncate">{subtitle}</div>
+        </div>
+      </div>
+    </div>
   );
 }
