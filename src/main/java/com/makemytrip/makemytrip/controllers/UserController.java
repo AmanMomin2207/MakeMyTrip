@@ -21,4 +21,19 @@ public class UserController {
     public ResponseEntity<Users> signup(@RequestBody Users user){
         return ResponseEntity.ok(userServices.signup(user));
     }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<Users> getUserByEmail(@PathVariable String email){
+        Users user = userServices.getUserByEmail(email);
+        if(user != null){
+            return ResponseEntity.ok(user);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/edit/{id}")
+    public Users editprofile(@RequestParam String id , @RequestBody Users updatedUsers ){
+        return userServices.editprofile(id, updatedUsers);
+    }
 }

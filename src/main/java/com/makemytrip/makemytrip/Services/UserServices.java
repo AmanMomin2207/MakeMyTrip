@@ -34,4 +34,19 @@ public class UserServices {
         return userRepository.save(user);
 
     }
+
+    public Users getUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    public Users editprofile(String id , Users updatedUser){
+        Users user = userRepository.findById(id).orElse(null);
+        if(user != null){
+            user.setfirstname(updatedUser.getfirstname());
+            user.setlastname(updatedUser.getlastname());
+            user.setphoneNumber(updatedUser.getphoneNumber());
+            return userRepository.save(user);
+        }
+        return null;
+    }
 }

@@ -1,12 +1,14 @@
 package com.makemytrip.makemytrip.models;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "users")  // mongo DB Document
+@Document(collection = "users") // mongo DB Document
 public class Users {
-    @Id                                                     //Spring data
+    @Id // Spring data
     private String _id;
     private String firstname;
     private String lastname;
@@ -15,27 +17,37 @@ public class Users {
     private String role;
     private String phoneNumber;
 
-    public void setfirstname(String firstname){
+    private List<Booking> bookings = new ArrayList<>();
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
+    public void setfirstname(String firstname) {
         this.firstname = firstname;
     }
 
-    public String getfirstname(){
+    public String getfirstname() {
         return firstname;
     }
 
-    public void setlastname(String secondname){
+    public void setlastname(String secondname) {
         this.lastname = secondname;
     }
 
-    public String getlastname(){
+    public String getlastname() {
         return lastname;
     }
 
-    public void setphoneNumber(String number){
+    public void setphoneNumber(String number) {
         this.phoneNumber = number;
     }
 
-    public String getphoneNumber(){
+    public String getphoneNumber() {
         return phoneNumber;
     }
 
@@ -47,7 +59,7 @@ public class Users {
         return email;
     }
 
-    public String getRole(){
+    public String getRole() {
         return role;
     }
 
@@ -65,8 +77,6 @@ public class Users {
         private String date;
         private int quantity;
         private double totalPrice;
-
-        private List<Booking> bookings;
 
         public String getType() {
             return type;
@@ -106,14 +116,6 @@ public class Users {
 
         public void setTotalPrice(double totalPrice) {
             this.totalPrice = totalPrice;
-        }
-
-        public List<Booking> getBookings(){
-            return bookings;
-        }
-
-        public void setBookings(List<Booking> bookings){
-            this.bookings = bookings;
         }
     }
 }
