@@ -73,6 +73,34 @@ export const addflight = async (
   }
 };
 
+export const editflight = async (
+  id,
+  flightName,
+  from,
+  to,
+  departureTime,
+  arrivalTime,
+  price,
+  availableSeats
+) => {
+  try {
+    const res = await axios.put(`${BACKEND_URL}/admin/flight/${id}`, {
+      flightName,
+      from,
+      to,
+      departureTime,
+      arrivalTime,
+      price,
+      availableSeats,
+    });
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 export const gethotel = async () => {
   try {
     const response = await axios.get(`${BACKEND_URL}/api/hotel`);
@@ -98,6 +126,51 @@ export const addhotel = async (
       availableRooms,
       amenities,
     });
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const edithotel = async (
+  id,
+  hotelName,
+  location,
+  pricePerNight,
+  availableRooms,
+  amenities
+) => {
+  try {
+    const res = await axios.put(`${BACKEND_URL}/admin/hotel/${id}`, {
+      hotelName,
+      location,
+      pricePerNight,
+      availableRooms,
+      amenities,
+    });
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const handleflightbooking = async (userId, flightId, seats, price) => {
+  try {
+    const url = `${BACKEND_URL}/booking/flight?userId=${userId}&flightId=${flightId}&seats=${seats}&price=${price}`;
+    const res = await axios.post(url);
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const handlehotelbooking = async (userId, hotelId, rooms, price) => {
+  try {
+    const url = `${BACKEND_URL}/booking/flight?userId=${userId}&hotelId=${hotelId}&rooms=${rooms}&price=${price}`;
+    const res = await axios.post(url);
     const data = res.data;
     return data;
   } catch (error) {

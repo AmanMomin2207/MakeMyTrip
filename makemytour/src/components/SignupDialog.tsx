@@ -14,7 +14,7 @@ import { login, signup } from "../api";
 import { setUser } from "@/store";
 import { useDispatch } from "react-redux";
 
-const SignupDialog = () => {
+const SignupDialog = ({trigger}:any) => {
   const [isSignup, setIsSignup] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -57,12 +57,7 @@ const SignupDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setopen}>
       <DialogTrigger asChild>
-        <Button
-          className="bg-white text-black hover:bg-gray-200"
-          variant="outline"
-        >
-          Sign Up
-        </Button>
+        {trigger }
       </DialogTrigger>
       <DialogContent className="bg-white text-black">
         <DialogHeader>
