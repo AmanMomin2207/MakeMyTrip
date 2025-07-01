@@ -23,6 +23,14 @@ public class Users {
         return bookings;
     }
 
+    public String getId() {
+        return _id;
+    }
+
+    public void setId(String id) {
+        this._id = id;
+    }
+
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }

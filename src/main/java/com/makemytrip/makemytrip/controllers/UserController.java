@@ -32,7 +32,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/edit/{id}")
+    @PutMapping("/edit")
     public Users editprofile(@RequestParam String id , @RequestBody Users updatedUsers ){
         return userServices.editprofile(id, updatedUsers);
     }

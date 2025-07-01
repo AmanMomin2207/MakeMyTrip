@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { setUser } from "@/store";
+import { DialogDescription } from "@radix-ui/react-dialog";
 import {
   AlertCircle,
   ArrowRight,
@@ -192,6 +193,9 @@ const index = () => {
           Flight Booking Details
         </DialogTitle>
       </DialogHeader>
+      <DialogDescription>
+        {/*       */}
+      </DialogDescription>
       <div className="grid gap-6 mt-4 text-black">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -525,7 +529,7 @@ const index = () => {
                 <DialogTrigger asChild>
                   <Button className="w-full bg-red-600 text-white">
                     Book Now
-                  </Button>  
+                  </Button>
                 </DialogTrigger>
                 {user ? (
                   <BookingContent />
@@ -535,7 +539,7 @@ const index = () => {
                       <DialogTitle>Login Required</DialogTitle>
                     </DialogHeader>
                     <p>Please log in to continue with your booking.</p>
-                    <SignupDialog 
+                    <SignupDialog
                       trigger={
                         <Button className="w-full">Log In / Sign Up</Button>
                       }

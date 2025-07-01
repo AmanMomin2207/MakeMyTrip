@@ -17,20 +17,51 @@ export const login = async (email, password) => {
 export const signup = async (
   firstName,
   lastName,
-  phoneNumber,
   email,
+  phoneNumber,
   password
 ) => {
   try {
     const res = await axios.post(`${BACKEND_URL}/user/signup`, {
       firstName,
       lastName,
-      phoneNumber,
       email,
+      phoneNumber,
       password,
     });
     const data = res.data;
     // console.log(data);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getuserbyemail = async (email) => {
+  try {
+    const res = await axios.post(`${BACKEND_URL}/user/email?email=${email}`);
+    const data = res.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editprofile = async (
+  id,
+  firstname,
+  lastname,
+  email,
+  phoneNumber
+) => {
+  try {
+    const res = await axios.post(`${BACKEND_URL}/user/edit?id=${id}`, {
+      firstname,
+      lastname,
+      email,
+      phoneNumber,
+    });
+    const data = res.data;
     return data;
   } catch (error) {
     throw error;
@@ -100,7 +131,6 @@ export const editflight = async (
   }
 };
 
-
 export const gethotel = async () => {
   try {
     const response = await axios.get(`${BACKEND_URL}/api/hotel`);
@@ -169,7 +199,7 @@ export const handleflightbooking = async (userId, flightId, seats, price) => {
 
 export const handlehotelbooking = async (userId, hotelId, rooms, price) => {
   try {
-    const url = `${BACKEND_URL}/booking/flight?userId=${userId}&hotelId=${hotelId}&rooms=${rooms}&price=${price}`;
+    const url = `${BACKEND_URL}/booking/hotel?userId=${userId}&hotelId=${hotelId}&rooms=${rooms}&price=${price}`;
     const res = await axios.post(url);
     const data = res.data;
     return data;

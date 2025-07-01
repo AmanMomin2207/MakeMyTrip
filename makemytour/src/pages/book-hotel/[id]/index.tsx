@@ -30,8 +30,10 @@ import SignupDialog from "@/components/SignupDialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { setUser } from "@/store";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface Hotel {
+  id: string;
   hotelName: string;
   location: string;
   pricePerNight: number;
@@ -43,6 +45,7 @@ const index = () => {
   const router = useRouter();
   const { id } = router.query;
   const user = useSelector((state: any) => state.user.user);
+  // console.log(user.user)
   const [hotels, sethotels] = useState<Hotel[]>([]);
   const [loading, setloading] = useState(true);
   const [quantity, setquantity] = useState(1);
@@ -143,10 +146,11 @@ const index = () => {
         ...user,
         bookings: [...user.bookings, data],
       };
+      console.log(data);
       dispatch(setUser(updateuser));
       setopem(false);
       setquantity(1);
-      router.push("/profile");
+      // router.push("/profile");
     } catch (error) {
       console.log(error);
     }
@@ -160,6 +164,7 @@ const index = () => {
           Hotel Booking Details
         </DialogTitle>
       </DialogHeader>
+      <DialogDescription>{/* ... */}</DialogDescription>
       <div className="grid gap-6 mt-4 text-black">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Hotel Name */}
@@ -168,7 +173,7 @@ const index = () => {
               <MapPin className="w-4 h-4 mr-2" />
               Hotel Name
             </Label>
-            <Input id="hotelName" value={hotel.hotelName} readOnly />
+            <Input id="hotelName" value={hotel?.hotelName} readOnly />
           </div>
 
           {/* Location */}
@@ -177,7 +182,7 @@ const index = () => {
               <MapPin className="w-4 h-4 mr-2" />
               Location
             </Label>
-            <Input id="location" value={hotel.location} readOnly />
+            <Input id="location" value={hotel?.location} readOnly />
           </div>
           {/* Price Per Night */}
           <div className="space-y-2">
@@ -187,7 +192,7 @@ const index = () => {
             </Label>
             <Input
               id="pricePerNight"
-              value={`₹ ${hotel.pricePerNight}`}
+              value={`₹ ${hotel?.pricePerNight}`}
               readOnly
             />
           </div>
@@ -198,7 +203,7 @@ const index = () => {
               <Ticket className="w-4 h-4 mr-2" />
               Available Rooms
             </Label>
-            <Input id="availableRooms" value={hotel.availableRooms} readOnly />
+            <Input id="availableRooms" value={hotel?.availableRooms} readOnly />
           </div>
 
           {/* Number of Rooms to Book */}
@@ -211,7 +216,7 @@ const index = () => {
               id="quantity"
               type="number"
               min="1"
-              max={hotel.availableRooms}
+              max={hotel?.availableRooms}
               value={quantity}
               onChange={handleQuantityChange}
             />
