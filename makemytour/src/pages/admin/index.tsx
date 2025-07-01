@@ -1,4 +1,10 @@
-import { addflight, addhotel, editflight, getuserbyemail } from "@/api";
+import {
+  addflight,
+  addhotel,
+  editflight,
+  edithotel,
+  getuserbyemail,
+} from "@/api";
 import FlightList from "@/components/Flights/Flightlist";
 import HotelList from "@/components/Hotel/Hotellist";
 import { Button } from "@/components/ui/button";
@@ -243,14 +249,17 @@ function Addedithotel({ hotel }: { hotel: Hotel | null }) {
 
   const handlesubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if(hotel){
-      hotel.id,
-      formdata.hotelName,
-      formdata.location,
-      formdata.pricePerNight,
-      formdata.availableRooms,
-      formdata.amenities
+
+    if (hotel) {
+      await edithotel(
+        hotel.id,
+        formdata.hotelName,
+        formdata.location,
+        formdata.pricePerNight,
+        formdata.availableRooms,
+        formdata.amenities
+      );
+      return;
     }
 
     await addhotel(
@@ -393,7 +402,7 @@ function Addeditflight({ flight }: { flight: Flight | null }) {
         formdata.price,
         formdata.availableSeats
       );
-      return
+      return;
     }
 
     await addflight(
