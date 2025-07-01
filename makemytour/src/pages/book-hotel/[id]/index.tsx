@@ -150,7 +150,7 @@ const index = () => {
       dispatch(setUser(updateuser));
       setopem(false);
       setquantity(1);
-      // router.push("/profile");
+      router.push("/profile");
     } catch (error) {
       console.log(error);
     }

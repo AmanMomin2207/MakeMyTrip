@@ -1,4 +1,4 @@
-import { addflight, addhotel } from "@/api";
+import { addflight, addhotel, editflight, getuserbyemail } from "@/api";
 import FlightList from "@/components/Flights/Flightlist";
 import HotelList from "@/components/Hotel/Hotellist";
 import { Button } from "@/components/ui/button";
@@ -156,16 +156,10 @@ function UserSearch() {
   const [email, setemail] = useState("");
   const [user, setuser] = useState<User | null>(null);
 
-  const handlesearch = (e: React.FormEvent) => {
+  const handlesearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    const sampleuser: any = {
-      _id: "1",
-      firstname: "John",
-      lastname: "Doe",
-      email: "email",
-      role: "user",
-      phoneNumber: "1234567890",
-    };
+    const data = await getuserbyemail(email);
+    const sampleuser = data;
     setuser(sampleuser);
   };
   return (
@@ -249,7 +243,15 @@ function Addedithotel({ hotel }: { hotel: Hotel | null }) {
 
   const handlesubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting hotel data:", formdata);
+    
+    if(hotel){
+      hotel.id,
+      formdata.hotelName,
+      formdata.location,
+      formdata.pricePerNight,
+      formdata.availableRooms,
+      formdata.amenities
+    }
 
     await addhotel(
       formdata.hotelName,
@@ -333,7 +335,7 @@ function Addedithotel({ hotel }: { hotel: Hotel | null }) {
 }
 
 interface Flight {
-  _id?: string;
+  id?: string;
   flightName: string;
   from: string;
   to: string;
@@ -379,6 +381,20 @@ function Addeditflight({ flight }: { flight: Flight | null }) {
     e.preventDefault();
 
     console.log("Submitting flight data:", formdata);
+
+    if (flight) {
+      await editflight(
+        flight?.id,
+        formdata.flightName,
+        formdata.from,
+        formdata.to,
+        formdata.departureTime,
+        formdata.arrivalTime,
+        formdata.price,
+        formdata.availableSeats
+      );
+      return
+    }
 
     await addflight(
       formdata.flightName,

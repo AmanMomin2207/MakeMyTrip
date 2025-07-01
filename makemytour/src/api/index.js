@@ -39,7 +39,7 @@ export const signup = async (
 
 export const getuserbyemail = async (email) => {
   try {
-    const res = await axios.post(`${BACKEND_URL}/user/email?email=${email}`);
+    const res = await axios.get(`${BACKEND_URL}/user/email?email=${email}`);
     const data = res.data;
     return data;
   } catch (error) {

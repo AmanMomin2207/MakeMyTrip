@@ -22,8 +22,8 @@ public class UserController {
         return ResponseEntity.ok(userServices.signup(user));
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<Users> getUserByEmail(@PathVariable String email){
+    @GetMapping("/email")
+    public ResponseEntity<Users> getUserByEmail(@RequestParam String email){
         Users user = userServices.getUserByEmail(email);
         if(user != null){
             return ResponseEntity.ok(user);
