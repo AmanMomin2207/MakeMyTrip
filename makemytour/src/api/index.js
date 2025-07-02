@@ -55,7 +55,7 @@ export const editprofile = async (
   phoneNumber
 ) => {
   try {
-    const res = await axios.post(`${BACKEND_URL}/user/edit?id=${id}`, {
+    const res = await axios.put(`${BACKEND_URL}/user/edit?id=${id}`, {
       firstname,
       lastname,
       email,

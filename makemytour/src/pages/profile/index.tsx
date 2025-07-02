@@ -28,8 +28,8 @@ const index = () => {
   };
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
-    firstname: user?.firstName ? user?.firstName : "",
-    lastname: user?.lastName ? user?.lastName : "",
+    firstName: user?.firstname ? user?.firstname : "",
+    lastName: user?.lastname ? user?.lastname : "",
     email: user?.email ? user?.email : "",
     phoneNumber: user?.phoneNumber ? user?.phoneNumber : "",
     bookings: [
@@ -65,14 +65,13 @@ const index = () => {
     try {
       const data = await editprofile(
         user?.id,
-        userData.firstname,
-        userData.lastname,
+        userData.firstName,
+        userData.lastName,
         userData.email,
         userData.phoneNumber
       );
-      console.log(userData)
       dispatch(setUser(data));
-      setIsEditing(true);
+      setIsEditing(false);
     } catch (error) {
       setUserData(editForm);
       setIsEditing(false);
@@ -120,8 +119,8 @@ const index = () => {
                     </label>
                     <input
                       type="text"
-                      value={userData.firstname}
-                      onChange={(e) => handleEditFormChange("firstname", e.target.value)}
+                      value={userData.firstName}
+                      onChange={(e) => handleEditFormChange("firstName", e.target.value)}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
@@ -131,8 +130,8 @@ const index = () => {
                     </label>
                     <input
                       type="text"
-                      value={userData.lastname}
-                      onChange={(e) => handleEditFormChange("lastname", e.target.value)}
+                      value={userData.lastName}
+                      onChange={(e) => handleEditFormChange("lastName", e.target.value)}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
