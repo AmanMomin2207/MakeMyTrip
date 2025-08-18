@@ -9,6 +9,7 @@ import com.makemytrip.makemytrip.repositories.FlightRepository;
 import com.makemytrip.makemytrip.repositories.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.makemytrip.makemytrip.Services.BookingEmailService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class BookingService {
 
     @Autowired
     private HotelRepository hotelRepository;
+
+    @Autowired
+    private BookingEmailService bookingEmailService;
 
     public Booking bookFlight(String userId, String fligthId, int seats, double price) {
         Optional<Users> userOptional = userRepository.findById(userId);
@@ -47,12 +51,22 @@ public class BookingService {
                 booking.setTotalPrice(price);
                 user.getBookings().add(booking);
                 userRepository.save(user);
+
+                bookingEmailService.sendEmail(
+                        user.getEmail(),
+                        "Your booking is confirmed.",
+                        booking.getBookingId(),
+                        booking.getDate(),
+                        booking.getTotalPrice()
+                );
+
                 return booking;
             }
             else{
                 throw new RuntimeException("Not enough seats available");
             }
         }
+
         throw new RuntimeException("User or flight not found");
     }
 

@@ -26,7 +26,7 @@ public class AdminController {
     private HotelRepository hotelRepository;
      
 
-    @GetMapping("*/users")
+    @GetMapping("/users")
     public ResponseEntity<List<Users>> getallUsers() {
         List<Users> users = userRepository.findAll();
         return ResponseEntity.ok(users); 

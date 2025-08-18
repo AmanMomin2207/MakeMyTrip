@@ -29,12 +29,13 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center space-x-2 text-white">
           <Plane className="w-8 h-8 text-red-500" />
-          <span className="text-2xl font-bold text-black">  <a href="http://localhost:3000/">MakeMyTour</a></span>
+          <span className="text-2xl font-bold text-black">
+            <a href="http://localhost:3000/">MakeMyTour</a>
+          </span>
         </div>
         <div className="flex items-center space-x-4">
           {user ? (
             <>
-              if
               {user.role === "ADMIN" && (
                 <Button variant="default" onClick={() => router.push("/admin")}>
                   ADMIN

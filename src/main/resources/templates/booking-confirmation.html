@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container {
+          max-width: 600px;
+          margin: auto;
+          padding: 15px;
+          border: 1px solid #eee;
+          border-radius: 8px;
+        }
+        h2 { color: #007bff; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 8px; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Your Booking is Confirmed 🎉</h2>
+    <p>Dear Customer,</p>
+    <p>Here are your booking details:</p>
+    <table>
+        <tr><td><b>Booking ID</b></td><td th:text="${bookingId}"></td></tr>
+        <tr><td><b>Date</b></td><td th:text="${dates}"></td></tr>
+        <tr><td><b>Total Price</b></td><td>₹ <span th:text="${price}"></span></td></tr>
+    </table>
+    <h3>Cancellation Policy</h3>
+    <ul>
+        <li><b th:text="${dates} + ' : '"> ₹</b> <span th:text="${price}"></span></li>
+        <li><b  th:text="${date1} + ' : '"> ₹</b> <span th:text="${price2}"></span></li>
+        <li><b  th:text="${date2} + ' : '"> ₹</b><span th:text="${price3}"></span></li>
+    </ul>
+    <p>Thank you for booking with us!</p>
+</div>
+</body>
+</html>

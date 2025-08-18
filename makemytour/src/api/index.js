@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = "https://makemytrip-bo8k.onrender.com";
+const BACKEND_URL = "http://localhost:8080";
 
 export const login = async (email, password) => {
   try {
@@ -15,16 +15,16 @@ export const login = async (email, password) => {
 };
 
 export const signup = async (
-  firstName,
-  lastName,
+  firstname,
+  lastname,
   email,
   phoneNumber,
   password
 ) => {
   try {
     const res = await axios.post(`${BACKEND_URL}/user/signup`, {
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       email,
       phoneNumber,
       password,
