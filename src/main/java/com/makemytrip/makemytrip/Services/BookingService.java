@@ -90,6 +90,15 @@ public class BookingService {
                 booking.setTotalPrice(price);
                 user.getBookings().add(booking);
                 userRepository.save(user);
+
+                bookingEmailService.sendEmail(
+                        user.getEmail(),
+                        "Your booking is confirmed.",
+                        booking.getBookingId(),
+                        booking.getDate(),
+                        booking.getTotalPrice()
+                );
+
                 return booking;
             }
             else{
@@ -98,4 +107,6 @@ public class BookingService {
         }
         throw new RuntimeException("User or flight not found");
     }
+
+
 }

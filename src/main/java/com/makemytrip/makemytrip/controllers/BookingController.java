@@ -21,4 +21,5 @@ public class BookingController {
     public Users.Booking bookHotel(@RequestParam String userId , @RequestParam String hotelId , @RequestParam int rooms , @RequestParam double price ){
         return bookingService.bookHotel(userId, hotelId, rooms, price);
     }
+
 }
