@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.makemytrip.makemytrip.Services.BookingEmailService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.management.RuntimeErrorException;
@@ -21,6 +23,9 @@ import javax.management.RuntimeErrorException;
 public class BookingService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RefundPolicyService refundPolicyService;
 
     @Autowired
     private FlightRepository flightRepository;
@@ -108,5 +113,35 @@ public class BookingService {
         throw new RuntimeException("User or flight not found");
     }
 
+    public Users cancelBooking(String userId , String bookingId, String reason) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        for(Booking booking : user.getBookings()){
+            if (booking.getBookingId().equals(bookingId)) {
+                // already canceled?
+                if (booking.getStatus().equals("CANCELED")) {
+                    return user;  // return existing user object
+                }
+
+                double refundAmount = refundPolicyService.calculateRefund(
+                        booking.getDate(),
+                        LocalDateTime.now(),
+                        booking.getTotalPrice()
+                );
+
+                booking.setStatus("CANCELED");
+
+                Booking.Refund refund = new Booking.Refund();
+                refund.setStatus("PROCESSING");
+                refund.setAmount(refundAmount);
+                refund.setReason(reason);
+
+                booking.setRefund(refund);
+            }
+        }
+
+        return userRepository.save(user); // save updated user with booking changes
+
+    }
 }

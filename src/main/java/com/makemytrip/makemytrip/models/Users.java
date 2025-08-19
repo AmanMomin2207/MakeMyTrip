@@ -86,6 +86,26 @@ public class Users {
         private String date;
         private int quantity;
         private double totalPrice;
+        private String status = "NOT_INITIATED"; // NOT_INITIATED, PROCESSING, COMPLETED
+        private Refund refund;
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public Refund getRefund() {
+            return refund;
+        }
+
+        public void setRefund(Refund refund) {
+            this.refund = refund;
+        }
+
+
 
         public String getType() {
             return type;
@@ -127,6 +147,36 @@ public class Users {
             this.totalPrice = totalPrice;
         }
 
+        public static class Refund {
+            private String status = "NOT_INITIATED"; // NOT_INITIATED, PROCESSING, COMPLETED
+            private double amount;
+            private String reason;
 
+            // Getters and Setters
+
+            public String getStatus() {
+                return status;
+            }
+
+            public double getAmount() {
+                return amount;
+            }
+
+            public String getReason() {
+                return reason;
+            }
+
+            public void setStatus(String status) {
+                this.status = status;
+            }
+
+            public void setAmount(double amount) {
+                this.amount = amount;
+            }
+
+            public void setReason(String reason) {
+                this.reason = reason;
+            }
+        }
     }
 }

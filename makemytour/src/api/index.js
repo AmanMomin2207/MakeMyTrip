@@ -207,3 +207,14 @@ export const handlehotelbooking = async (userId, hotelId, rooms, price) => {
     console.log(error);
   }
 };
+
+export const cancelBooking = async (userId, bookingId, reason) => {
+  try{
+    const url = `${BACKEND_URL}/booking/cancel/${userId}/${bookingId}`;
+    const res = await axios.post(url , { reason });
+    const data = res.data;
+    return data;
+  }catch(error){
+    console.log(error);
+  }
+}

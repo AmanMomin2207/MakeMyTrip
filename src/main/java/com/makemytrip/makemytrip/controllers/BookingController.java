@@ -22,4 +22,18 @@ public class BookingController {
         return bookingService.bookHotel(userId, hotelId, rooms, price);
     }
 
+    @PostMapping("/cancel/{userId}/{bookingId}")
+    public ResponseEntity<Users> cancelBooking(@PathVariable String userId,@PathVariable String bookingId,@RequestBody CancelRequest request
+    ) {
+        Users updatedUser = bookingService.cancelBooking(userId, bookingId, request.getReason());
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    // DTO for cancellation reason
+    static class CancelRequest {
+        private String reason;
+        public String getReason() { return reason; }
+        public void setReason(String reason) { this.reason = reason; }
+    }
+
 }

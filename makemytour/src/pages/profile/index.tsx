@@ -16,15 +16,39 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { clearUser, setUser } from "@/store";
-import { editprofile } from "@/api";
+import { editprofile, cancelBooking } from "@/api";
 const index = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user.user);
   const router = useRouter();
 
+  const [showDialog, setShowDialog] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [selectedBooking, setSelectedBooking] = useState<
+    (typeof user.bookings)[0] | null
+  >(null);
+
   const logout = () => {
     dispatch(clearUser());
     router.push("/");
+  };
+
+  const handleCancelConfirm = async () => {
+    if (!cancelReason.trim()) return alert("Please enter a reason!");
+    try {
+      const updatedUser = await cancelBooking(
+        user?.id,
+        selectedBooking?.bookingId,
+        cancelReason
+      );
+      console.log(updatedUser);
+      dispatch(setUser(updatedUser));
+      setShowDialog(false);
+      setCancelReason("");
+      setSelectedBooking(null);
+    } catch (err) {
+      console.error("Cancel failed:", err);
+    }
   };
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
@@ -85,12 +109,13 @@ const index = () => {
       year: "numeric",
     });
   };
-  const handleEditFormChange = (field:any, value:any) => {
+  const handleEditFormChange = (field: any, value: any) => {
     setUserData((prevState) => ({
-        ...prevState,
-        [field]: value, // Update the specific field dynamically
-      }));
+      ...prevState,
+      [field]: value, // Update the specific field dynamically
+    }));
   };
+
   return (
     <div className="min-h-screen bg-gray-50 pt-8 px-4 text-black">
       <div className="max-w-6xl mx-auto">
@@ -120,7 +145,9 @@ const index = () => {
                     <input
                       type="text"
                       value={userData.firstName}
-                      onChange={(e) => handleEditFormChange("firstName", e.target.value)}
+                      onChange={(e) =>
+                        handleEditFormChange("firstName", e.target.value)
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
@@ -131,7 +158,9 @@ const index = () => {
                     <input
                       type="text"
                       value={userData.lastName}
-                      onChange={(e) => handleEditFormChange("lastName", e.target.value)}
+                      onChange={(e) =>
+                        handleEditFormChange("lastName", e.target.value)
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
@@ -142,8 +171,9 @@ const index = () => {
                     <input
                       type="email"
                       value={userData.email}
-                      onChange={(e) => handleEditFormChange("email", e.target.value)}
-                      
+                      onChange={(e) =>
+                        handleEditFormChange("email", e.target.value)
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
@@ -154,7 +184,9 @@ const index = () => {
                     <input
                       type="tel"
                       value={userData.phoneNumber}
-                      onChange={(e) => handleEditFormChange("phoneNumber", e.target.value)}
+                      onChange={(e) =>
+                        handleEditFormChange("phoneNumber", e.target.value)
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
@@ -258,9 +290,63 @@ const index = () => {
                         <span>Paid</span>
                       </div>
                     </div>
+                    {/* Cancel button */}
+                    {booking?.status !== "CANCELED" ? (
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(booking);
+                          setShowDialog(true);
+                        }}
+                        className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                      >
+                        Cancel Booking
+                      </button>
+                    ) : (
+                      <p className="mt-4 text-red-600 font-semibold">
+                        Booking Cancelled
+                        <br />
+                        {booking?.refund?.amount && (
+                          <span className="ml-2 text-gray-700">
+                            (Refund: ₹
+                            {booking?.refund?.amount.toLocaleString("en-IN")})
+                          </span>
+                        )}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
+              {/* Cancel Reason Dialog */}
+              {showDialog && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+                  <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+                    <h3 className="text-lg font-semibold mb-4">
+                      Cancel Booking
+                    </h3>
+                    <textarea
+                      value={cancelReason}
+                      onChange={(e) => setCancelReason(e.target.value)}
+                      placeholder="Enter cancellation reason..."
+                      className="w-full border rounded p-2 mb-4"
+                      rows={3}
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => setShowDialog(false)}
+                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                      >
+                        Close
+                      </button>
+                      <button
+                        onClick={handleCancelConfirm}
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        Confirm Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
