@@ -54,6 +54,9 @@ public class BookingService {
                 booking.setDate(LocalDate.now().toString());
                 booking.setQuantity(seats);
                 booking.setTotalPrice(price);
+                booking.setDelayMinutes(flight.getDelayMinutes());
+                booking.setDelayReason(flight.getDelayReason());
+                booking.setStatus_Flight(flight.getStatus());
                 user.getBookings().add(booking);
                 userRepository.save(user);
 

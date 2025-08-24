@@ -85,7 +85,10 @@ export const addflight = async (
   departureTime,
   arrivalTime,
   price,
-  availableSeats
+  availableSeats,
+  status,
+  delayReason,
+  delayMinutes
 ) => {
   try {
     const res = await axios.post(`${BACKEND_URL}/admin/flight`, {
@@ -96,6 +99,9 @@ export const addflight = async (
       arrivalTime,
       price,
       availableSeats,
+      status,
+      delayReason,
+      delayMinutes,
     });
     const data = res.data;
     return data;
@@ -209,12 +215,12 @@ export const handlehotelbooking = async (userId, hotelId, rooms, price) => {
 };
 
 export const cancelBooking = async (userId, bookingId, reason) => {
-  try{
+  try {
     const url = `${BACKEND_URL}/booking/cancel/${userId}/${bookingId}`;
-    const res = await axios.post(url , { reason });
+    const res = await axios.post(url, { reason });
     const data = res.data;
     return data;
-  }catch(error){
+  } catch (error) {
     console.log(error);
   }
-}
+};

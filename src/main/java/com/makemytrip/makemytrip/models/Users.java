@@ -88,6 +88,33 @@ public class Users {
         private double totalPrice;
         private String status = "NOT_INITIATED"; // NOT_INITIATED, PROCESSING, COMPLETED
         private Refund refund;
+        private String status_Flight;  // ON_TIME | DELAYED | BOARDING | IN_AIR | LANDED | CANCELLED
+        private String delayReason;  // Weather | ATC | Technical | Crew | Late Inbound | Security
+        private int delayMinutes;
+
+        public String getStatus_Flight() {
+            return status_Flight;
+        }
+
+        public void setStatus_Flight(String status_Flight) {
+            this.status_Flight = status_Flight;
+        }
+
+        public String getDelayReason() {
+            return delayReason;
+        }
+
+        public void setDelayReason(String delayReason) {
+            this.delayReason = delayReason;
+        }
+
+        public int getDelayMinutes() {
+            return delayMinutes;
+        }
+
+        public void setDelayMinutes(int delayMinutes) {
+            this.delayMinutes = delayMinutes;
+        }
 
         public String getStatus() {
             return status;

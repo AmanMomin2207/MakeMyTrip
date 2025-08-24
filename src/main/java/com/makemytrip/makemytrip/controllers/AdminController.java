@@ -60,6 +60,11 @@ public class AdminController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("flight/{id}")
+    public Flight getFlight(@PathVariable String id) {
+        return flightRepository.findById(id).orElse(null);
+    }
+
     @PutMapping("hotel/{id}")
     public ResponseEntity<Hotel> editHotel(@PathVariable String id , @RequestBody Hotel updatedHotel){
         Optional<Hotel> hoteOptional = hotelRepository.findById(id);

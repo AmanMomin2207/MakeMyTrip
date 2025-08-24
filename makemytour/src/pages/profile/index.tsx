@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { clearUser, setUser } from "@/store";
 import { editprofile, cancelBooking } from "@/api";
+
 const index = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user.user);
@@ -312,7 +313,15 @@ const index = () => {
                           </span>
                         )}
                       </p>
-                    )}
+                    )} 
+                    {/* Cancel button */}
+                    {booking?.status_Flight !== "ON_TIME" && booking?.status_Flight !== undefined &&
+                      <p
+                        className="mt-3 px-4 py-2 text-sm font-medium rounded-lg bg-yellow-100 text-yellow-800 border border-yellow-300 shadow-sm"
+                      >
+                        Delayed by {booking.delayMinutes} mins (Reason: {booking.delayReason})
+                      </p> 
+                    }
                   </div>
                 ))}
               </div>

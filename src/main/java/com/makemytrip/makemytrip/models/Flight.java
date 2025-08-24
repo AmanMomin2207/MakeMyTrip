@@ -1,9 +1,11 @@
 package com.makemytrip.makemytrip.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "flight ")
+@CompoundIndex(name = "from_to_idx", def = "{'from': 1, 'to': 1}")
 public class Flight {
     @Id
     private String _id;
@@ -14,6 +16,9 @@ public class Flight {
     private String arrivalTime;
     private double price;
     private int availableSeats;
+    private String status;  // ON_TIME | DELAYED | BOARDING | IN_AIR | LANDED | CANCELLED
+    private String delayReason;  // Weather | ATC | Technical | Crew | Late Inbound | Security
+    private int delayMinutes;
 
     public String getId() {
         return _id;
@@ -77,5 +82,29 @@ public class Flight {
 
     public void setAvailableSeats(int availableSeats) {
         this.availableSeats = availableSeats;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDelayReason() {
+        return delayReason;
+    }
+
+    public void setDelayReason(String delayReason) {
+        this.delayReason = delayReason;
+    }
+
+    public int getDelayMinutes() {
+        return delayMinutes;
+    }
+
+    public void setDelayMinutes(int delayMinutes) {
+        this.delayMinutes = delayMinutes;
     }
 }
